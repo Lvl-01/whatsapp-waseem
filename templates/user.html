@@ -1,40 +1,32 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>واتس حرب</title>
-  <link rel="stylesheet" href="/static/style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="/static/style.css">
+<title>واتس حرب</title>
 </head>
-<body class="mobile-page">
-  <main class="phone-shell">
-    <div class="status-bar">
-      <span>9:41</span>
-      <div class="notch"></div>
-      <div class="icons">
-        <span>▮▮▮</span>
-        <span>◔</span>
-        <span>▭</span>
-      </div>
-    </div>
-
-    <section class="mobile-header simple">
+<body class="site-page">
+  <main class="page-shell">
+    <section class="brand-top">
       <h1>واتس حرب</h1>
       <p>للتعلّم والتجريب فقط</p>
     </section>
 
-    <section class="white-card">
-      <h2>أدخل رقم الجوال</h2>
-      <p class="sub">اختر رمز الدولة ثم أدخل رقم الجوال</p>
+    <section class="panel user-panel">
+      <div class="panel-header">
+        <h2>أدخل رقم الجوال</h2>
+        <p>اختر رمز الدولة ثم أدخل رقم الجوال</p>
+      </div>
 
       {% if request.query_params.get("error") %}
-      <div class="error-box">يرجى إدخال رقم جوال صحيح.</div>
+      <div class="alert error">يرجى إدخال رقم جوال صحيح.</div>
       {% endif %}
 
-      <form action="/start" method="post" class="stack">
-        <div class="select-row">
-          <span class="caret">⌄</span>
-          <select name="country_code" class="select-input">
+      <form action="/start" method="post" class="form-stack">
+        <div class="field">
+          <label>رمز الدولة</label>
+          <select name="country_code" class="input select" required>
             <option value="966">المملكة العربية السعودية +966</option>
             <option value="971">الإمارات العربية المتحدة +971</option>
             <option value="965">دولة الكويت +965</option>
@@ -45,17 +37,14 @@
           </select>
         </div>
 
-        <div class="text-input with-icon">
-          <span class="icon">☏</span>
-          <input type="tel" name="phone" placeholder="5XXXXXXXX" required>
+        <div class="field">
+          <label>رقم الجوال</label>
+          <input class="input" type="tel" name="phone" placeholder="5XXXXXXXX" required>
         </div>
 
-        <button class="green-btn" type="submit">التالي</button>
+        <button class="btn-primary" type="submit">التالي</button>
       </form>
     </section>
-
-    <div class="wave"></div>
-    <div class="home-indicator"></div>
   </main>
 </body>
 </html>
